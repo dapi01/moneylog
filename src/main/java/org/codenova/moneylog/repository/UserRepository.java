@@ -12,4 +12,12 @@ public interface UserRepository {
 
     public User findByProviderAndProviderId(@Param("provider") String provider,
                                             @Param("providerId") String providerId);
+
+    public  int updatePasswordByEmail(@Param("password") String password,
+                                      @Param("email") String email);
+
+    public User userVerified(@Param("email") String email);
+
+
+
 }
