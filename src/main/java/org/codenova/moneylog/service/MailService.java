@@ -1,16 +1,12 @@
 package org.codenova.moneylog.service;
 
 import jakarta.mail.internet.MimeMessage;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.Loader;
 import org.codenova.moneylog.entity.User;
-import org.springframework.mail.MailSender;
+import org.codenova.moneylog.entity.Verifications;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +51,7 @@ public class MailService {
             mailSender.send(message);
 
         }catch(Exception e){
-            log.error("error = {}", e);
+            log.error("error = {}", e.getMessage());
             return false;
         }
         return true;
@@ -66,8 +62,8 @@ public class MailService {
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(email);
-        message.setSubject("[코드노바] 머니로그 회원가입을 환영합니다.");
-        message.setText("임시비밀번호 : " +temporalPassword);
+        message.setSubject("[코드노바] 임시 비밀번호를 발급하였습니다.");
+        message.setText("임시비밀번호 : " + temporalPassword);
 
         boolean result =true;
         try {
@@ -77,25 +73,30 @@ public class MailService {
             result = false;
         }
         return result;
-
-
     }
-    public boolean sendEmailVerify(String email, String token){
-        MimeMessage message = mailSender.createMimeMessage();
-        boolean result =true;
-        try{
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message, "utf-8");
-            messageHelper.setTo(email);
-            messageHelper.setSubject("[코드노바] 이메일 인증.");
 
-            String html = "<h2>안녕하세요,<a href='http://192.168.10.65:8080'> 머니로그입니다.</h2>";
-            html += "<p><a href='http://192.168.10.65:8080/auth/email-verify/" + email + "/" + token + "'>토큰보내기</a></p>";
-            messageHelper.setText(html,true);
+    public boolean sendVerificationMessage(User user, Verifications verification) {
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setTo(user.getEmail());
+        message.setSubject("[코드노바] 머니로그 이메일 인증");
+        String text = "안녕하세요, " + user.getNickname()+"님\n";
+        text += "이메일 인증 토큰을 보내드립니다. 토큰값 = "  + verification.getToken()+"\n";
+        text += "인증 토큰 유효기간은 " + verification.getExpiresAt() +" 까지 입니다.\n\n";
+        text += "인증링크 :  http://192.168.10.65:8080/auth/email-verify?token="+verification.getToken();
+        text += "\n\n";
+        text += "팀 코드노바";
+
+        message.setText(text);
+        boolean result =true;
+        try {
             mailSender.send(message);
-        }catch (Exception e){
-            log.error("error = {}", e);
+        } catch (Exception e) {
+            log.error("error = {}", e.getMessage());
             result = false;
         }
         return result;
     }
+
+
 }

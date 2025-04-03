@@ -23,7 +23,7 @@
     </update>
 
     <update id="userVerified">
-        update users set verified='T' where email=#{email }
+        update users set verified='T' where email=#{email}
     </update>
 
 </mapper>

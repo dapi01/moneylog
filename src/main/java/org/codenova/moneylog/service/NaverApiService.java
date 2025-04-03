@@ -1,10 +1,10 @@
 package org.codenova.moneylog.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.codenova.moneylog.vo.KakaoTokenResponse;
 import org.codenova.moneylog.vo.NaverProfileResponse;
 import org.codenova.moneylog.vo.NaverTokenResponse;
 import org.springframework.http.HttpEntity;
@@ -51,13 +51,10 @@ public class NaverApiService {
                 new HttpEntity<>(body, headers),
                 String.class
         );
-        NaverTokenResponse naverTokenResponse =
-                objectMapper.readValue(response.getBody(), NaverTokenResponse.class);
 
+        //log.info("profile = {}", response.getBody());
         String extractJson = objectMapper.readTree(response.getBody()).path("response").toString();
 
         return objectMapper.readValue(extractJson, NaverProfileResponse.class);
-
-
     }
 }

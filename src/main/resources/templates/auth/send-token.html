@@ -10,7 +10,7 @@
 <p>
     아래에 이메일 주소를 입력해라
 </p>
-<form th:action="@{/auth/email-create-verification}" method="post">
+<form th:action="@{/auth/email-verify}" method="post">
     <input type="text" name="email">
     <span th:text="${error}" style="font-size: small; color: pink"></span>
     <button type="submit">전송하기</button>

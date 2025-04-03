@@ -25,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -36,8 +37,6 @@ public class AuthController {
     private KakaoApiService kakaoApiService;
     private MailService mailService;
     private VerificationRepository verificationRepository;
-
-
     private UserRepository userRepository;
 
 
@@ -46,12 +45,12 @@ public class AuthController {
     public String loginHandle(Model model) {
         // log.info("loginHandle...executed");
 
-        model.addAttribute("kakaoClientId", "847b759335c33e6b4f353f471db9a868");
-        model.addAttribute("kakaoRedirectUri", "http://192.168.10.62:8080/auth/kakao/callback");
+        model.addAttribute("kakaoClientId", "dbf4c3fce0a6d83a32988b67843ff363");
+        model.addAttribute("kakaoRedirectUri", "http://192.168.10.65:8080/auth/kakao/callback");
 
 
-        model.addAttribute("naverClientId", "aYEz34PADGSVOtamYGHb");
-        model.addAttribute("naverRedirectUri", "http://192.168.10.62:8080/auth/naver/callback");
+        model.addAttribute("naverClientId", "F1A0nSVWMrUkKyDhkGgd");
+        model.addAttribute("naverRedirectUri", "http://192.168.10.65:8080/auth/naver/callback");
 
 
         return "auth/login";
@@ -141,11 +140,11 @@ public class AuthController {
                 = naverApiService.exchangeProfile(tokenResponse.getAccessToken());
         // log.info("profileResponse id = {}", profileResponse.getId());
         log.info("profileResponse nickname = {}", profileResponse.getNickname());
-        log.info("profileResponse profileImage = {}", profileResponse.getProfileImage() );
+        log.info("profileResponse profileImage = {}", profileResponse.getProfileImage());
         // =========================================================================================
 
-        User found = userRepository.findByProviderAndProviderId("NAVER", profileResponse.getId() );
-        if(found == null) {
+        User found = userRepository.findByProviderAndProviderId("NAVER", profileResponse.getId());
+        if (found == null) {
             User user = User.builder()
                     .nickname(profileResponse.getNickname())
                     .provider("NAVER")
@@ -158,7 +157,6 @@ public class AuthController {
         } else {
             session.setAttribute("user", found);
         }
-
 
 
         return "redirect:/index";
@@ -193,12 +191,39 @@ public class AuthController {
         return "redirect:/index";
     }
 
-    @GetMapping("/email-check")
-    public String emailVerify(){
-        return "auth/email-check";
+
+@GetMapping("send-token")
+public String sendTokenHandle(@SessionAttribute("user") User user, Model model){
+        String token = UUID.randomUUID().toString().replace("-","");
+        Verifications one = Verifications.builder().token(token).expiresAt(LocalDateTime.now()
+                .plusDays(1)).userEmail(user.getEmail()).build();
+
+        verificationRepository.create(one);
+        mailService.sendVerificationMessage(user, one);
+
+        return "auth/send-token";
+}
+
+    @GetMapping("/email-verify")
+    public String emailVerifyHandle(@RequestParam("token")String token, Model model){
+        Verifications found = verificationRepository.selectVerification(token);
+        if(found == null){
+            model.addAttribute("error", "유효하지 않은 인증토큰 입니다.");
+            return "auth/email-verify-error";
+        }
+        if(LocalDateTime.now().isAfter(found.getExpiresAt())){
+            model.addAttribute("error","유효기간이 만료된 인증토큰 입니다.");
+        }
+       // found.getExpiresAt(); : 토큰 유효 만료 시점
+       // LocalDateTime.now();  : 인증 시점
+
+        String userEmail =found.getUserEmail();
+        userRepository.userVerified(userEmail);
+
+        return "auth/email-verify";
     }
 
-
+/*
     @GetMapping("/email-check")
     public String verificationHandle(@RequestParam("email")String email, Model model){
         User found = userRepository.findByEmail(email);
@@ -228,7 +253,7 @@ public class AuthController {
         }
         return "auth/email-verify-check";
     }
-
+*/
 
 
 }

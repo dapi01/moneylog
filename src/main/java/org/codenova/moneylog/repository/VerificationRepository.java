@@ -7,6 +7,6 @@ import org.codenova.moneylog.entity.Verifications;
 @Mapper
 public interface VerificationRepository {
 
-    public Verifications create(Verifications verifications);
+    public int create(Verifications verifications);
     public Verifications selectVerification(@Param("token") String token);
 }
