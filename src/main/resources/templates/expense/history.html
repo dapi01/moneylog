@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>머니로그 - 당신의 돈을 기록하세요</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        input, select {
+            border: none;
+            font-weight: 100;
+            font-size: 1em;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            font-size: 1em;
+            background-color: #f6f8fa;
+        }
+    </style>
+</head>
+<body style=" margin: 30px;">
+
+<!--
+<div style="max-width: 1020px; margin: auto">
+    <form method="get" action="/expense/history"
+          style="margin-bottom: 30px; display: flex; justify-content: center;
+      align-items: center; padding: 20px; gap: 20px;">
+
+
+        <input type="date" name="startDate" value="2025-04-01"
+               style="padding: 10px 12px; font-size: 18px; font-weight: 300; text-align: center; border: 1px solid #ccc; border-radius: 6px;">
+
+        <span style="font-size:20px">~</span>
+        <input type="date" name="endDate" value="2025-04-30"
+               style="padding: 10px 12px; font-size: 18px; font-weight: 300; text-align: center; border: 1px solid #ccc; border-radius: 6px;">
+
+
+        <button type="submit"
+                style="padding: 10px 30px; font-size: 18px;  border: none;
+            background-color: slategray; color: white; border-radius: 6px; cursor: pointer;">
+            검색
+        </button>
+    </form>
+-->
+
+<!-- 📋 지출 내역 테이블-->
+<table style="border-collapse: collapse; width: 100%; margin-bottom: 30px;">
+    <thead>
+    <tr style="background-color: #f2f2f2;">
+        <th style="padding: 8px; border: 1px solid #ccc; width:5%">
+            <input type="checkbox"/>
+        </th>
+        <th style="padding: 8px; border: 1px solid #ccc; width:15%">날짜</th>
+        <th style="padding: 8px; border: 1px solid #ccc; width:45%">내용</th>
+        <th style="padding: 8px; border: 1px solid #ccc; width:15%">금액</th>
+        <th style="padding: 8px; border: 1px solid #ccc; width:20%">카테고리</th>
+
+    </tr>
+    </thead>
+    <tbody th:each="one : ${save}">
+    <tr>
+        <td style="padding: 8px; border: 1px solid #ccc;text-align: center">
+            <input type="checkbox"/></td>
+        <td th:text="${one.expenseDate}" style="padding: 8px; border: 1px solid #ccc;"></td>
+        <td th:text="${one.description}" style="padding: 8px; border: 1px solid #ccc;"></td>
+        <td th:text="${one.amount}" style="padding: 8px; border: 1px solid #ccc;"></td>
+        <td th:text="${one.categoryId}" style="padding: 8px; border: 1px solid #ccc;"></td>
+    </tr>
+    </tbody>
+</table>
+
+
+<div style="margin-top: 30px;">
+    <form th:action="@{/expense/history}" method="post">
+        <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px;">
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ccc;text-align: center; width: 5%">
+                    <input type="checkbox" disabled/></td>
+                <td style="padding: 8px; border: 1px solid #ccc; width: 15%; ">
+                    <input type="date" th:max="${now}" name="expenseDate" style="width: 100%;"/>
+                </td>
+                <td style="padding: 8px; border: 1px solid #ccc;  width: 45%;">
+                    <input type="text" name="description" style="width: 100%; "/>
+                </td>
+                <td style="padding: 8px; border: 1px solid #ccc;  width: 15%;">
+                    <input type="number" name="amount" style="width: 100%;"/>
+                </td>
+                <td style="padding: 8px; border: 1px solid #ccc;  width: 20%;">
+                    <select name="categoryId" style="width: 100%">
+                        <option disabled selected>카테고리</option>
+                        <option th:each="one:${sort}"
+                                th:value="${one.id}"
+                                th:text="${one.name}"></option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div style="text-align: right; ">
+            <button type="submit" style="padding: 4px 30px;  border: none;
+            background-color: slategray; color: white; border-radius: 6px; cursor: pointer;">저장하기
+            </button>
+        </div>
+    </form>
+</div>
+</div>
+</body>
+</html>
