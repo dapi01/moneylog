@@ -25,12 +25,14 @@ public class ExpenseController {
     private CategoryRepository categoryRepository;
 
     @GetMapping("/history")
+
     public String historyHandle(@SessionAttribute("user") User user, Model model) {
         model.addAttribute("sort", categoryRepository.findAll());
         model.addAttribute("now", LocalDate.now());
 
+        //model.addAttribute("expenses",expenseRepository.findByUserIdAndDuration(user.getId()));
+        model.addAttribute("expenses", expenseRepository.findByUserIdAndDuration(user.getId(), LocalDate.now().minusDays(10), LocalDate.now()));
         List <ExpenseJoin> save = expenseRepository.expenseJoin();
-
 
         model.addAttribute("save", save);
 

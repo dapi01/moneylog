@@ -14,10 +14,17 @@ public interface ExpenseRepository {
 
     public List<Expense> findByUserId(int userId);
 
-    public List<Expense> findByUserAndDuration(@Param("userId") String userId,
-                                         @Param("startDate") LocalDate startDate,
-                                         @Param("endDate") LocalDate endDate);
+    public List<Expense> findByUserIdAndDuration(@Param("userId") int userId,
+                                                 @Param("startDate") LocalDate startDate,
+                                                 @Param("endDate") LocalDate endDate);
 
     public List<ExpenseJoin> expenseJoin();
+
+    public int selectWeeklyExpense(@Param("userId") int userId,
+                                              @Param("startDate") LocalDate startDate,
+                                              @Param("endDate") LocalDate endDate);
+    public List<Expense> selectWeeklyExpenseTop3(@Param("userId") int userId,
+                                        @Param("startDate") LocalDate startDate,
+                                        @Param("endDate") LocalDate endDate);
 
 }

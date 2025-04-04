@@ -16,4 +16,12 @@
     <select id="expenseJoin">
         select expenses.*,categorys.name from (expenses join categorys on expenses.category_id = categorys.id)
 </select>
+    <select id="selectWeeklyExpense" resultType="int">
+        select ifnull(sum(amount), 0) from expenses
+        where user_id=#{userId} and expense_date between #{startDate} and #{endDate}
+    </select>
+    <select id="selectWeeklyExpenseTop3" resultType="expense">
+        select * from expenses
+        where user_id=#{userId} and expense_date between #{startDate} and #{endDate} order by amount desc limit 3
+    </select >
 </mapper>
