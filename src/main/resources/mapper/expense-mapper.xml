@@ -13,4 +13,7 @@
     <select id="findByUserIdAndDuration" resultType="expense">
         select * from expenses where user_id=#{userId} and expense_date between #{startDate} and #{endDate}
     </select>
+    <select id="expenseJoin">
+        select expenses.*,categorys.name from (expenses join categorys on expenses.category_id = categorys.id)
+</select>
 </mapper>

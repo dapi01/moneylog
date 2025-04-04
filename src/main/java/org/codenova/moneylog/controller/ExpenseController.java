@@ -6,6 +6,7 @@ import org.codenova.moneylog.entity.Expense;
 import org.codenova.moneylog.entity.User;
 import org.codenova.moneylog.repository.CategoryRepository;
 import org.codenova.moneylog.repository.ExpenseRepository;
+import org.codenova.moneylog.vo.ExpenseJoin;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class ExpenseController {
         model.addAttribute("sort", categoryRepository.findAll());
         model.addAttribute("now", LocalDate.now());
 
-        List <Expense> save = expenseRepository.findByUserId(user.getId());
+        List <ExpenseJoin> save = expenseRepository.expenseJoin();
 
 
         model.addAttribute("save", save);

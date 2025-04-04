@@ -3,6 +3,7 @@ package org.codenova.moneylog.repository;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.codenova.moneylog.entity.Expense;
+import org.codenova.moneylog.vo.ExpenseJoin;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,5 +17,7 @@ public interface ExpenseRepository {
     public List<Expense> findByUserAndDuration(@Param("userId") String userId,
                                          @Param("startDate") LocalDate startDate,
                                          @Param("endDate") LocalDate endDate);
+
+    public List<ExpenseJoin> expenseJoin();
 
 }
