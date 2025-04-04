@@ -24,4 +24,12 @@
         select * from expenses
         where user_id=#{userId} and expense_date between #{startDate} and #{endDate} order by amount desc limit 3
     </select >
+    <select id="topSpendingCategory" resultType="categoryExpense">
+        select t.*, categorys.name as category_name from (
+        select category_id, sum(amount) as total from expenses
+        where user_id=#{userId} and expense_date between #{startDate} and #{endDate}
+        group by category_id
+        ) as t join categorys on t.category_id = categorys.id
+        order by total desc
+    </select>
 </mapper>

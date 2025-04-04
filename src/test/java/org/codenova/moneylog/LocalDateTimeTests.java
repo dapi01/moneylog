@@ -23,7 +23,14 @@ public class LocalDateTimeTests {
 
         LocalDate d = LocalDate.of(2025,3,18);
         LocalDate firstDayOfWeek = d.minusDays(d.getDayOfYear());
-
-
     }
+
+    @Test
+    public void test02(){
+        LocalDate today = LocalDate.of(2025, 2, 1);
+        System.out.println(today.getDayOfMonth());
+
+        today.plusDays(1);
+    }
+
 }

@@ -57,7 +57,11 @@
 
         <div>
             <div style="font-size: 14px; color: #555; margin-bottom: 4px;">가장 지출이 큰 카테고리</div>
-            <div style="font-weight: bold;">카테고리명 (₩0)</div>
+            <div style="font-weight: bold;" th:unless="${#arrays.isEmpty(categoryExpenses)}" >
+                <span th:text="${categoryExpenses[0].categoryName}"></span>
+
+                <span th:text="${#numbers.formatInteger(categoryExpenses[0].total, 1, 'COMMA')}"></span>
+            </div>
         </div>
         <div style="margin-top: 20px;">
             <a href="/expense/history" style="font-size: 13px;color: #007bff;text-decoration: none;">
