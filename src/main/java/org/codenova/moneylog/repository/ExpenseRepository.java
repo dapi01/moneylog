@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.codenova.moneylog.entity.Expense;
 import org.codenova.moneylog.query.CategoryExpense;
+import org.codenova.moneylog.query.DailyExpense;
 import org.codenova.moneylog.vo.ExpenseJoin;
 
 import java.time.LocalDate;
@@ -31,5 +32,14 @@ public interface ExpenseRepository {
     public List<CategoryExpense> topSpendingCategory(@Param("userId") int userId,
                                                      @Param("startDate") LocalDate startDate,
                                                      @Param("endDate") LocalDate endDate);
+
+    public List<CategoryExpense> getCategory(@Param("userId") int userId,
+                                             @Param("startDate") LocalDate startDate,
+                                             @Param("endDate") LocalDate endDate);
+
+    public List<DailyExpense> getDailyExpense (@Param("userId") int userId,
+                                               @Param("startDate") LocalDate startDate,
+                                               @Param("endDate") LocalDate endDate);
+
 
 }
