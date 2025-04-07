@@ -6,6 +6,7 @@ import org.codenova.moneylog.entity.Expense;
 import org.codenova.moneylog.entity.User;
 import org.codenova.moneylog.repository.CategoryRepository;
 import org.codenova.moneylog.repository.ExpenseRepository;
+import org.codenova.moneylog.request.SearchPeriodRequest;
 import org.codenova.moneylog.vo.ExpenseJoin;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,13 +26,30 @@ public class ExpenseController {
     private CategoryRepository categoryRepository;
 
     @GetMapping("/history")
+    public String historyHandle(@SessionAttribute("user") User user,
+                                @ModelAttribute SearchPeriodRequest searchPeriodRequest,
+                                Model model) {
 
-    public String historyHandle(@SessionAttribute("user") User user, Model model) {
+            LocalDate startDate;
+            LocalDate endDate;
+            if(searchPeriodRequest.getStartDate() != null && searchPeriodRequest.getEndDate() != null) {
+                startDate = searchPeriodRequest.getStartDate();
+                endDate = searchPeriodRequest.getEndDate();
+            } else {
+                LocalDate today = LocalDate.now();
+                startDate = today.minusDays(today.getDayOfMonth()-1);
+                endDate= startDate.plusMonths(1).minusDays(1);
+            }
+
+
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
         model.addAttribute("sort", categoryRepository.findAll());
         model.addAttribute("now", LocalDate.now());
 
         //model.addAttribute("expenses",expenseRepository.findByUserIdAndDuration(user.getId()));
-        model.addAttribute("expenses", expenseRepository.findByUserIdAndDuration(user.getId(), LocalDate.now().minusDays(10), LocalDate.now()));
+        model.addAttribute("expenses", expenseRepository.findByUserIdAndDuration(user.getId(), startDate, endDate));
         List <ExpenseJoin> save = expenseRepository.expenseJoin();
 
         model.addAttribute("save", save);
